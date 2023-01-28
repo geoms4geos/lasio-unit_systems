@@ -121,7 +121,7 @@ class LASFile(object):
 
     """
 
-    def __init__(self, file_ref=None, **read_kwargs):
+    def __init__(self, file_ref=None, index_unit = None, **read_kwargs):
         super(LASFile, self).__init__()
         self._text = ""
         self.index_unit = None

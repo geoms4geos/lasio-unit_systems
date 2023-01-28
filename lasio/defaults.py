@@ -6,8 +6,30 @@ import numpy as np
 
 from .las_items import HeaderItem, SectionItems, OrderedDict
 
+DEPTH_UNITS = {
+    "FT": ("FT", "F", "FEET", "FOOT"),
+    "M": ("M", "METER", "METERS", "METRE", "METRES", u"метер", u"м"),
+    ".1IN": (".1IN", "0.1IN", ".1INCH", "0.1INCH"),
+}
 
-def get_default_items():
+def get_default_items(depth_unit = 'ft'):
+    
+    default_unit = list(DEPTH_UNITS.keys())[0]
+    unit_systems = []
+    for index_unit, possibilities in DEPTH_UNITS.items():
+        if depth_unit.upper() in possibilities:
+            unit_systems.append(index_unit)
+            #unit_defined = True
+
+    if len(unit_systems) == 0:
+        print("No valid unit system identified, reverting to units - {0}".format(default_unit))
+        unit_system = default_unit
+    elif len(unit_systems) == 1:
+        unit_system = unit_systems[0]              
+    else:
+        print("Multiple unit systems identified. How did you manage that? Reverting to first unit system - {0}".format(unit_systems[0]))   
+        unit_system = unit_systems[0]
+        
     return {
         "Version": SectionItems(
             [
@@ -18,9 +40,9 @@ def get_default_items():
         ),
         "Well": SectionItems(
             [
-                HeaderItem("STRT", "m", np.nan, "START DEPTH"),
-                HeaderItem("STOP", "m", np.nan, "STOP DEPTH"),
-                HeaderItem("STEP", "m", np.nan, "STEP"),
+                HeaderItem("STRT", "{0}".format(unit_system), np.nan, "START DEPTH"),
+                HeaderItem("STOP", "{0}".format(unit_system), np.nan, "STOP DEPTH"),
+                HeaderItem("STEP", "{0}".format(unit_system), np.nan, "STEP"),
                 HeaderItem("NULL", "", -9999.25, "NULL VALUE"),
                 HeaderItem("COMP", "", "", "COMPANY"),
                 HeaderItem("WELL", "", "", "WELL"),
